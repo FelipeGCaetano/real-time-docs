@@ -22,6 +22,4 @@ httpServer.listen(port, () =>
 
 const io = new Server(httpServer);
 
-io.on("connection", () => {
-    console.log('Client connected');
-})
+export default io
