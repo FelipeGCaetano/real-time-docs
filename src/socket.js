@@ -7,7 +7,7 @@ io.on("connection", (socket) => {
         socket.join(docName);
     });
 
-    socket.on("text_editor", (text, docName) => {
+    socket.on("text_editor", ({text, docName}) => {
         socket.to(docName).emit("written_text", text);
     });
 });

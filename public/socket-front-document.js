@@ -6,8 +6,8 @@ export function selectDocument(docName) {
     socket.emit("select_doc", docName);
 };
 
-export function emitTextEditor(text, docName) {
-    socket.emit("text_editor", text, docName);
+export function emitTextEditor(data) {
+    socket.emit("text_editor", data);
 };
 
 socket.on("written_text", (text) => {
