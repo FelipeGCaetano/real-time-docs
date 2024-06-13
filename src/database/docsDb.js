@@ -12,4 +12,9 @@ function updateDoc(docName, text) {
     return update
 }
 
-export { findDoc, updateDoc }
+function getAllDocs() {
+    const docs = docCollection.find().toArray()
+    return docs
+}
+
+export { findDoc, updateDoc, getAllDocs };
