@@ -17,4 +17,4 @@ try {
     console.log(error);
 }
 
-export default client
+export { docCollection }
