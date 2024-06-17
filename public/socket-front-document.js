@@ -1,17 +1,27 @@
-import { updateTextEditor } from "./document.js";
+import { alertarERedirecionar, atualizaTextoEditor } from "./document.js";
 
 const socket = io();
 
-export function selectDocument(docName) {
-    socket.emit("select_doc", docName, (text) => {
-        updateTextEditor(text);        
-    });
-};
+function selecionarDocumento(nome) {
+  socket.emit("selecionar_documento", nome, (texto) => {
+    atualizaTextoEditor(texto);
+  });
+}
 
-export function emitTextEditor(data) {
-    socket.emit("text_editor", data);
-};
+function emitirTextoEditor(dados) {
+  socket.emit("texto_editor", dados);
+}
 
-socket.on("written_text", (text) => {
-    updateTextEditor(text);
+socket.on("texto_editor_clientes", (texto) => {
+  atualizaTextoEditor(texto);
 });
+
+function emitirExcluirDocumento(nome) {
+  socket.emit("excluir_documento", nome);
+}
+
+socket.on("excluir_documento_sucesso", (nome) => {
+  alertarERedirecionar(nome);
+});
+
+export { emitirTextoEditor, selecionarDocumento, emitirExcluirDocumento };

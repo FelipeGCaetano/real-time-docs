@@ -1,13 +1,31 @@
-import "./socket-front-index.js"
+import { emitirAdicionarDocumento } from "./socket-front-index.js";
 
-const docList = document.getElementById("lista-documentos");
+const listaDocumentos = document.getElementById("lista-documentos");
+const form = document.getElementById("form-adiciona-documento");
+const inputDocumento = document.getElementById("input-documento");
 
-function insertDocLink(docName) {
-    docList.innerHTML += `
-        <a href="document.html?nome=${docName}" class="list-group-item list-group-item-action">
-            ${docName}
-        </a>
-    `
+form.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  emitirAdicionarDocumento(inputDocumento.value);
+  inputDocumento.value = "";
+});
+
+function inserirLinkDocumento(nomeDocumento) {
+  listaDocumentos.innerHTML += `
+    <a
+      href="document.html?nome=${nomeDocumento}"
+      class="list-group-item list-group-item-action"
+      id="documento-${nomeDocumento}"
+    >
+      ${nomeDocumento}
+    </a>
+  `;
 }
 
-export { insertDocLink }
+function removerLinkDocumento(nomeDocumento) {
+  const documento = document.getElementById(`documento-${nomeDocumento}`);
+
+  listaDocumentos.removeChild(documento);
+}
+
+export { inserirLinkDocumento, removerLinkDocumento };

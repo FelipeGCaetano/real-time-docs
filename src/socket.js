@@ -1,29 +1,57 @@
+import {
+  adicionarDocumento,
+  atualizaDocumento,
+  encontrarDocumento,
+  excluirDocumento,
+  obterDocumentos,
+} from './database/docsDb.js'
 import io from "./server.js";
-import { findDoc, updateDoc, getAllDocs } from "./database/docsDb.js";
 
 io.on("connection", (socket) => {
-    socket.on("get_docs", async (giveDocsBack) => {
-        const docs = await getAllDocs();
-        
-        giveDocsBack(docs);
-    })
+  socket.on("obter_documentos", async (devolverDocumentos) => {
+    const documentos = await obterDocumentos();
 
-    socket.on("select_doc", async (docName, giveTextBack) => {
-        socket.join(docName);
+    devolverDocumentos(documentos);
+  });
 
-        const doc = await findDoc(docName);
+  socket.on("adicionar_documento", async (nome) => {
+    const documentoExiste = (await encontrarDocumento(nome)) !== null;
 
-        if(doc) {
-            giveTextBack(doc.text);
-        };
+    if (documentoExiste) {
+      socket.emit("documento_existente", nome);
+    } else {
+      const resultado = await adicionarDocumento(nome);
 
-    });
+      if (resultado.acknowledged) {
+        io.emit("adicionar_documento_interface", nome);
+      }
+    }
+  });
 
-    socket.on("text_editor", async ({text, docName}) => {
-        const update = await updateDoc(docName, text);
+  socket.on("selecionar_documento", async (nomeDocumento, devolverTexto) => {
+    socket.join(nomeDocumento);
 
-        if(update.modifiedCount) {
-            socket.to(docName).emit("written_text", text);
-        };
-    });
+    const documento = await encontrarDocumento(nomeDocumento);
+
+    if (documento) {
+      devolverTexto(documento.texto);
+    }
+  });
+
+  socket.on("texto_editor", async ({ texto, nomeDocumento }) => {
+    const atualizacao = await atualizaDocumento(nomeDocumento, texto);
+
+    if (atualizacao.modifiedCount) {
+      socket.to(nomeDocumento).emit("texto_editor_clientes", texto);
+    }
+  });
+
+  socket.on("excluir_documento", async (nome) => {
+    const resultado = await excluirDocumento(nome);
+
+    if (resultado.deletedCount) {
+      io.emit("excluir_documento_sucesso", nome);
+    }
+  });
 });
+  

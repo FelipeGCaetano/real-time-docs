@@ -1,26 +1,24 @@
-import express from 'express'
-import { config } from 'dotenv'
-import url from 'url'
-import path from 'path'
-import http from 'http'
-import { Server } from 'socket.io'
-import './database/mongo.js'
+import express from "express";
+import url from "url";
+import path from "path";
+import http from "http";
+import { Server } from "socket.io";
 
-config();
+import "./database/mongo.js";
 
 const app = express();
-const port = process.env.PORT;
+const porta = process.env.porta || 3000;
 
-const currentPath = url.fileURLToPath(import.meta.url);
-const publicDir = path.join(currentPath, '../..', 'public');
-app.use(express.static(publicDir));
+const caminhoAtual = url.fileURLToPath(import.meta.url);
+const diretorioPublico = path.join(caminhoAtual, "../..", "public");
+app.use(express.static(diretorioPublico));
 
-const httpServer = http.createServer(app);
+const servidorHttp = http.createServer(app);
 
-httpServer.listen(port, () => 
-    console.log(`Server running on port ${port}`)
+servidorHttp.listen(porta, () =>
+  console.log(`Servidor escutando na porta ${porta}`)
 );
 
-const io = new Server(httpServer);
+const io = new Server(servidorHttp);
 
-export default io
+export default io;

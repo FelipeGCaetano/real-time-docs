@@ -1,20 +1,54 @@
-import { docCollection } from "./mongo.js";
+import { documentosColecao } from "./mongo.js";
 
-function findDoc(docName) {
-    const document = docCollection.findOne({ name: docName })
-
-    return document;
+function obterDocumentos() {
+  const documentos = documentosColecao.find().toArray();
+  return documentos;
 }
 
-function updateDoc(docName, text) {
-    const update = docCollection.updateOne({ name: docName }, { $set: { text } })
+function adicionarDocumento(nome) {
+  const resultado = documentosColecao.insertOne({
+    nome,
+    texto: "",
+  });
 
-    return update
+  return resultado;
 }
 
-function getAllDocs() {
-    const docs = docCollection.find().toArray()
-    return docs
+function encontrarDocumento(nome) {
+  const documento = documentosColecao.findOne({
+    nome,
+  });
+
+  return documento;
 }
 
-export { findDoc, updateDoc, getAllDocs };
+function atualizaDocumento(nome, texto) {
+  const atualizacao = documentosColecao.updateOne(
+    {
+      nome,
+    },
+    {
+      $set: {
+        texto,
+      },
+    }
+  );
+
+  return atualizacao;
+}
+
+function excluirDocumento(nome) {
+  const resultado = documentosColecao.deleteOne({
+    nome,
+  });
+
+  return resultado;
+}
+
+export {
+  encontrarDocumento,
+  atualizaDocumento,
+  obterDocumentos,
+  adicionarDocumento,
+  excluirDocumento,
+};

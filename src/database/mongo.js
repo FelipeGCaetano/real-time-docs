@@ -4,17 +4,17 @@ config()
 
 const client = new MongoClient(process.env.MONGO_URL);
 
-let docCollection;
+let documentosColecao;
 
 try {
     await client.connect();
     
     const db = client.db("database");
-    docCollection = db.collection("dbdocuments");
+    documentosColecao = db.collection("dbdocuments");
 
     console.log("MongoDB connected!");
 } catch (error) {
     console.log(error);
 }
 
-export { docCollection }
+export { documentosColecao }
